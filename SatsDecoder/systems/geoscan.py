@@ -206,6 +206,7 @@ GEOSCAN4 = 0x0E
 GEOSCAN5 = 0x0F
 GEOSCAN6 = 0x10
 INNOSAT16 = 0x11
+LOBACHEVSKY = 0x12
 
 _satnum = construct.Enum(
     construct.Int8ul,
@@ -225,6 +226,7 @@ _satnum = construct.Enum(
     GEOSCAN5=GEOSCAN5,
     GEOSCAN6=GEOSCAN6,
     INNOSAT16=INNOSAT16,
+    LOBACHEVSKY=LOBACHEVSKY,
 )
 
 _frame_hdr = construct.Struct(
@@ -275,6 +277,7 @@ sat_names = {
     GEOSCAN5: 'geoscan-5-img',
     GEOSCAN6: 'geoscan-6-img',
     INNOSAT16: 'innosat16-img',
+    LOBACHEVSKY: 'lobachevsky-img'
 }
 
 
