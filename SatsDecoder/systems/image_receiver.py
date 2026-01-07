@@ -127,7 +127,7 @@ class ImageReceiver:
         self.merge_mode = 0
         self.current_fid = ''
         self.last_date = 0
-        self.time_fmt = '%Y-%m-%dT%H-%M-%S'
+        self.time_fmt = '%Y-%m-%dT%H-%M-%SZ'
         self.dated_img = 0
 
     @property

@@ -154,7 +154,7 @@ class HistoryFrame(ttk.LabelFrame):
         # self.table.column('#0', anchor='e')
         self.table.column('#0', width=110, stretch=tk.NO)
         self.table.heading('date', text='Date')
-        self.table.column('date', stretch=tk.NO, width=f.measure('8888-88-88 88:88:88.888'))
+        self.table.column('date', stretch=tk.NO, width=f.measure('8888-88-88 88:88:88Z'))
         self.table.heading('type', text='Type')
         self.table.column('type', stretch=tk.NO, width=f.measure('WWW'))
 
@@ -939,7 +939,7 @@ class DecoderFrame(ttk.Frame):
                     if store_tlm:
                         dt_str = date
                         if isinstance(date, dt.datetime):
-                            dt_str = date.strftime('%Y-%m-%dT%H-%M-%S')
+                            dt_str = date.strftime('%Y-%m-%dT%H-%M-%SZ')
                         name = ('%s_%s_%s_%s.txt' % (name, self.proto, tlm._name, dt_str)).replace(
                             ' ', '_').replace(':', '-')
                         fp = pathlib.Path(self.out_dir_v.get()) / name
