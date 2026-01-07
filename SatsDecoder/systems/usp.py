@@ -5,6 +5,8 @@
 #
 #  SPDX-License-Identifier: MIT
 
+import pathlib
+
 import construct
 
 from SatsDecoder import utils
@@ -1477,12 +1479,22 @@ usp_range = construct.GreedyRange(usp)
 class UspImageReceiver(ImageReceiver):
     def __init__(self, outdir):
         super().__init__(outdir, '.jpg')
+        self.last_fname = ''
+
+    def re_fname(self, fname, t):
+        if fname and self.dated_img:
+            if fname == self.last_fname:
+                t = self.last_date
+            self.last_fname = fname
+            x = pathlib.Path(fname)
+            return str(x.with_stem(x.stem + '_' + self.strftime(t)))
+        return fname
 
     def generate_fid(self, fname='', force=0, t=None):
         if self.current_fid.startswith('unknown_') and fname:
-            self.rename_image(self.current_fid, fname)
+            self.rename_image(self.current_fid, self.re_fname(fname, t))
         elif force or not (self.current_fid and self.merge_mode):
-            self.current_fid = fname or f'USP_unknown_{self.strftime(t)}'
+            self.current_fid = self.re_fname(fname, t) or f'USP_unknown_{self.strftime(t)}'
         return self.current_fid
 
     def push_data(self, data, t=None, **kw):

@@ -591,6 +591,18 @@ class DecoderFrame(ttk.Frame):
         self.new_btn = ttk.Button(self.ctrl_frame, text='New image', command=self.new_img)
         self.new_btn.grid(column=4, row=2, sticky=tk.EW, pady=3, padx=3)
 
+        # specific ctrl
+        self.specific_frame = tk.Frame(self.ctrl_frame)
+        self.specific_frame.grid(column=0, columnspan=5, row=3, sticky=tk.EW)
+        self.specific_cfg = {}
+        if self.proto == 'usp':
+            cfg_name = 'usp dated image'
+            self.specific_cfg[cfg_name] = self.usp_dated_img_v = tk.IntVar(self.specific_frame, int(config.get(cfg_name, 0)))
+            self.usp_dated_img_ckb = ttk.Checkbutton(self.specific_frame, text='Dated images',
+                                                     variable=self.usp_dated_img_v, command=self.usp_set_dated_img)
+            self.usp_dated_img_ckb.grid(column=0, row=0, sticky=tk.EW, pady=3)
+            self.usp_set_dated_img()
+
         # history frame
         self.history_frame = HistoryFrame(self, config)
         self.history_frame.grid(column=0, row=1, sticky=tk.NSEW, padx=2, pady=2)
@@ -683,6 +695,10 @@ class DecoderFrame(ttk.Frame):
             *_, img = args = self.decoder.create_new_image()
             self.dv_frame.set_img(img, 1)
             self.history_frame.put('img', self.proto, *args)
+
+    def usp_set_dated_img(self):
+        if self.decoder.ir and self.proto == 'usp':
+            self.decoder.ir.set_dated_img(self.usp_dated_img_v.get())
 
     def stop(self, _=None):
         if self.sk:
@@ -1068,6 +1084,9 @@ class App(ttk.Frame):
         self.config.set(name, 'connmode', str(df.get_conn_mode().value))
         self.config.set(name, 'filter', str(';'.join(k for k, v in df.history_frame.filters.items() if v.get())))
         self.config.set(name, 'autoscroll', str(df.history_frame.autoscroll_val.get()))
+
+        for k, v in df.specific_cfg.items():
+            self.config.set(name, k, str(v.get()))
 
     def about(self, evt=None):
         seq = queue.Queue(5)
