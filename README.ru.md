@@ -11,9 +11,9 @@
 
 Для начала, скачайте, установите и запустите саундмодем  
 https://r4uab.ru/settings-soundmodem/  
-* geoscan: [1](https://r4uab.ru/program/modem/geoscan.zip)
+* geoscan (new): [1](http://r4uab.ru/program/modem/geoscan27.zip), [2](http://uz7.ho.ua/geoscan27.zip)
+* geoscan (old): [1](http://r4uab.ru/program/modem/geoscan.zip), [2](http://uz7.ho.ua/geoscan.zip)
 * usp: [1](https://edu.sputnix.ru/assets/files/hs_soundmodem-4c5cea0c92a6d1e2d686662c6b3115a8.zip), [2](http://uz7.ho.ua/gmskusp.zip)
-* lucky-7: [1](http://uz7.ho.ua/lucky7.zip)
 * other: [1](http://uz7.ho.ua/packetradio.htm)
 
 Чтобы начать декодирование, запустите SatsDecoder, выберите вкладку нужного протокола (или добавьте новую вкладку) и нажмите кнопку `Connect`.
