@@ -18,6 +18,7 @@ import socket as sk
 import struct
 import sys
 import threading
+import time
 import tkinter as tk
 import urllib
 import urllib.error
@@ -278,6 +279,8 @@ class CanvasFrame(ttk.Frame):
         self.active_img = self.active_pil_img = self.active_pil_img_modified = None
         self.cnv_img_id = tk.ALL
         self._imgtk = 0
+        self.cnv_upd_t = 0
+        self.cnv_upd_t_span = 0.1
 
         self.info_frame = ttk.Frame(self)
         self.info_frame.grid(row=0, sticky=tk.NSEW, pady=3)
@@ -346,6 +349,11 @@ class CanvasFrame(ttk.Frame):
     def fill_canvas(self, img, force=0):
         if not (force or (self.active_img and self.active_img.fn == img.fn)):
             return 1
+
+        t = time.monotonic()
+        if not force and ((t - self.cnv_upd_t) < self.cnv_upd_t_span):
+            return 1
+        self.cnv_upd_t = t
 
         self.active_img = img
         self.image_name_l.config(text=img.fn.name)
@@ -737,6 +745,7 @@ class DecoderFrame(ttk.Frame):
                 for ln in text_e.get(1.0, tk.END).splitlines():
                     if self._hex_line(ln):
                         break
+                self.fill_data()
 
             ask_hex.grab_release()
             ask_hex.destroy()
@@ -772,6 +781,7 @@ class DecoderFrame(ttk.Frame):
         for fn in filedialog.askopenfilenames(filetypes=[('KISS', ['*.kss']), ('All files', '*.*')]):
             for t, data in utils.kiss_read(pathlib.Path(fn)):
                 self.feed(data, t)
+        self.fill_data()
 
     def _satdump_files(self):
         is_geoscan = self.proto == systems.geoscan.proto_name
@@ -806,6 +816,7 @@ class DecoderFrame(ttk.Frame):
                         break
 
                     self.feed(data)
+        self.fill_data()
 
     def _start(self):
         curr_mode = self.get_conn_mode()
@@ -926,9 +937,9 @@ class DecoderFrame(ttk.Frame):
                 self.show_warn(message='%s: Connection lost' % self.name)
             return 1
 
-        return self.feed(frame)
+        return self.feed(frame, force=1)
 
-    def feed(self, frame, t=None, store_tlm=1):
+    def feed(self, frame, t=None, store_tlm=1, force=0):
         try:
             data = frame[self.frame_off:]
             for i in self.decoder.recognize(data, t):
@@ -944,7 +955,7 @@ class DecoderFrame(ttk.Frame):
 
                 if ty == 'img':
                     ir_ret, img = packet
-                    self.dv_frame.set_img(img)
+                    self.dv_frame.set_img(img, force)
                     args = args[:-1] + (img,)
                     date = img.date
 
