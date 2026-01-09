@@ -61,7 +61,8 @@ https://r4uab.ru/settings-soundmodem/
 * `TCP Server` - TCP сокет как сервер
   * ВНИМАНИЕ!!! Для TCP типов поставщик данных должен отправить следующий заголовок до основных данных:  
     ```C
-    struct header {  
+    struct header {
+        int64_t t;     // unix timestamp, s (-1 if empty)
         uint32_t len;  // data length
     }
     ```

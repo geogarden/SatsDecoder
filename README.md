@@ -61,7 +61,8 @@ Various data source types are available in the `Conn` combobox:
 * `TCP Server` - TCP socket as server
   * ATTENTION!!! For TCP types, the data provider ensures that the header is sent before the main data:  
     ```C
-    struct header {  
+    struct header {
+        int64_t t;     // unix timestamp, s (-1 if empty)
         uint32_t len;  // data length
     }
     ```

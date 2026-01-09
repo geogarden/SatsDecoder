@@ -536,6 +536,7 @@ seqs_map = {
                             'X1VtX0tBX2NmNzhiMDE0YTguanBnPyVz',
 }
 
+TCP_HDR_FMT = struct.Struct('!qI')
 AGWPE_CON = b'\x00\x00\x00\x00k\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' \
             b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 AGWPE_HDR_FMT = struct.Struct('BxxxBxBx10s10sIxxxx')

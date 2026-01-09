@@ -924,6 +924,7 @@ class DecoderFrame(ttk.Frame):
         return bytes(ret)
 
     def _receive(self, conn):
+        t = None
         try:
             if self.is_agwpe_cli:
                 frame = conn.recv(utils.AGWPE_HDR_FMT.size)
@@ -933,11 +934,13 @@ class DecoderFrame(ttk.Frame):
                     port, kind, pid, c_from, c_to, dlen = utils.AGWPE_HDR_FMT.unpack_from(frame)
                     frame = conn.recv(dlen)
             else:
-                frame = self._recvall(conn, 4)
-                if len(frame) != 4:
+                frame = self._recvall(conn, utils.TCP_HDR_FMT.size)
+                if len(frame) != utils.TCP_HDR_FMT.size:
                     frame = 0
                 else:
-                    frame_sz, = struct.unpack('!I', frame)
+                    _t, frame_sz, = utils.TCP_HDR_FMT.unpack_from(frame)
+                    if _t >= 0:
+                        t = dt.datetime.fromtimestamp(_t, dt.timezone.utc)
                     frame = self._recvall(conn, frame_sz)
         except AttributeError:
             return 1
@@ -953,7 +956,7 @@ class DecoderFrame(ttk.Frame):
                 self.show_warn(message='%s: Connection lost' % self.name)
             return 1
 
-        return self.feed(frame, force=1)
+        return self.feed(frame, force=1, t=t)
 
     def feed(self, frame, t=None, store_tlm=1, force=0):
         try:
