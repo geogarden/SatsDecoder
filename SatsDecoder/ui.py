@@ -717,6 +717,7 @@ class DecoderFrame(ttk.Frame):
         if self.thr and self.thr.is_alive():
             self.thr.join(0)
             self.thr = 0
+
         self.named_conn_btn()
         self.server_e.config(state=tk.NORMAL)
         self.port_e.config(state=tk.NORMAL)

@@ -21,7 +21,6 @@ from SatsDecoder.systems.samsat_ion2 import *
 from SatsDecoder.systems.sharjahsat import *
 from SatsDecoder.systems.snuglite import *
 from SatsDecoder.systems.sonate2 import *
-# from SatsDecoder.systems.starlink_vhf import *
 from SatsDecoder.systems.usp import *
 from SatsDecoder.systems.wtc_simba import *
 from SatsDecoder.systems.raw import *
@@ -43,7 +42,6 @@ for i in (
         'sharjahsat',
         'snuglite',
         'sonate2',
-        # 'starlink_vhf',
         'wtc_simba',
         'raw',
         ):
