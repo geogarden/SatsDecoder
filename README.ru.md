@@ -66,6 +66,42 @@ https://r4uab.ru/settings-soundmodem/
     }
     ```
     Порядок байт: Network (big-endian)
+* `JSON files` - из JSON-файлов
+  ```json
+  {
+      [любой_уникальный_ключ]: {
+          ОБЯЗАТЕЛЬНО (one of):
+          * "raw": string  // hex строка
+          ИЛИ
+          * "data": string  // hex строка
+
+          ОПЦИОНАЛЬНО:
+          * "unixtime": string | number  // unix timestamp UTC, s
+          * "unixtimemill": string | number  // unix timestamp UTC, ms
+          * "datetime": string  // дата-время в ISO формате (например YYYY-MM-DDTHH:MM:SS)
+      }
+  }
+  ```
+  пример валидного JSON:
+  ```json
+  {
+    "001": {
+      "raw": "DEADBEEF",
+      "datetime": "2026-01-09T13:52:05"
+    },
+    "002": {
+      "data": "1337A55A",
+      "unixtime": "1767966804"
+    },
+    "003": {
+      "data": "ABBA",
+      "unixtimemill": 1767966804898
+    },
+    "004": {
+      "raw": "EA51"
+    }
+  }
+  ```
 * `KISS files` - из KISS-файлов
 * `SatDump frm files` - из SatDump frm файлов (только для AX.25 и Geoscan)
 

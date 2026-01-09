@@ -7,6 +7,7 @@
 
 import datetime as dt
 import enum
+import json
 import struct
 import sys
 import tkinter as tk
@@ -29,6 +30,7 @@ class ConnMode(enum.IntEnum):
     KISS_FILES = enum.auto()
     SATDUMP_FRM = enum.auto()
     HEX_FILES = enum.auto()
+    JSON_FILES = enum.auto()
 
 
 con_mode_names = {
@@ -37,6 +39,7 @@ con_mode_names = {
     ConnMode.TCP_SRV: 'TCP Server',
     ConnMode.HEX: 'HEX values',
     ConnMode.HEX_FILES: 'HEX values from files',
+    ConnMode.JSON_FILES: 'JSON files',
     ConnMode.KISS_FILES: 'KISS files',
     ConnMode.SATDUMP_FRM: 'SatDump frm files',
 }
@@ -499,10 +502,29 @@ def kiss_read(fp):
                 t = kiss_epoch + dt.timedelta(seconds=ts / 1000)
             elif fr[0] in KISS_CMD_DATA:
                 # data frame
-                yield t, kiss_unescape(fr[1:])
+                yield kiss_unescape(fr[1:]), t
             else:
                 # TODO: unknown, what to do?
                 pass
+
+
+def _json_get_t(v):
+    x = v.get('unixtime')
+    if x:
+        return dt.datetime.fromtimestamp(int(x), dt.timezone.utc)
+
+    x = v.get('unixtimemill')
+    if x:
+        return dt.datetime.fromtimestamp(int(x) // 1000, dt.timezone.utc)
+
+    x = v.get('datetime')
+    if x:
+        return dt.datetime.fromisoformat(x).astimezone(dt.timezone.utc)
+
+
+def json_read(fp):
+    for i, v in json.load(fp.open('rb')).items():
+        yield bytes.fromhex(v.get('raw') or v.get('data')), _json_get_t(v)
 
 
 seqs_map = {

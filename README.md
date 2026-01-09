@@ -66,6 +66,42 @@ Various data source types are available in the `Conn` combobox:
     }
     ```
     Byte order: Network (big-endian)
+* `JSON files` - read JSON-files
+  ```json
+  {
+      [any_unique_key]: {
+          REQUIRED (one of):
+          * "raw": string  // hex string
+          OR
+          * "data": string  // hex string
+
+          OPTIONAL:
+          * "unixtime": string | number  // unix timestamp UTC, s
+          * "unixtimemill": string | number  // unix timestamp UTC, ms
+          * "datetime": string  // datetime in ISO format (e.g. YYYY-MM-DDTHH:MM:SS)
+      }
+  }
+  ```
+  valid example:
+  ```json
+  {
+    "001": {
+      "raw": "DEADBEEF",
+      "datetime": "2026-01-09T13:52:05"
+    },
+    "002": {
+      "data": "1337A55A",
+      "unixtime": "1767966804"
+    },
+    "003": {
+      "data": "ABBA",
+      "unixtimemill": 1767966804898
+    },
+    "004": {
+      "raw": "EA51"
+    }
+  }
+  ```
 * `KISS files` - read KISS-files
 * `SatDump frm files` - read SatDump frm files (only for AX.25 and Geoscan)
 

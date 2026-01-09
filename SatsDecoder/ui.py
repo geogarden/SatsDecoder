@@ -647,6 +647,7 @@ class DecoderFrame(ttk.Frame):
             utils.ConnMode.TCP_SRV: ('Start', 'Stop'),
             utils.ConnMode.HEX: ('Run', 'Stop'),
             utils.ConnMode.HEX_FILES: ('Open', 'Stop'),
+            utils.ConnMode.JSON_FILES: ('Open', 'Stop'),
             utils.ConnMode.KISS_FILES: ('Open', 'Stop'),
             utils.ConnMode.SATDUMP_FRM: ('Open', 'Stop'),
         }
@@ -683,6 +684,8 @@ class DecoderFrame(ttk.Frame):
             self._hex_values()
         elif m == utils.ConnMode.HEX_FILES:
             self._hex_files()
+        elif m == utils.ConnMode.JSON_FILES:
+            self._json_files()
         elif m == utils.ConnMode.KISS_FILES:
             self._kiss_files()
         elif m == utils.ConnMode.SATDUMP_FRM:
@@ -778,10 +781,22 @@ class DecoderFrame(ttk.Frame):
                 if self._hex_line(ln, store_tlm):
                     break
 
+    def _json_files(self):
+        for fn in filedialog.askopenfilenames(filetypes=[('JSON', ['*.json']), ('All files', '*.*')]):
+            try:
+                for data, t in utils.json_read(pathlib.Path(fn)):
+                    self.feed(data, t)
+            except Exception as e:
+                self.show_err(message='read %s: %s' % (fn, e.args))
+        self.fill_data()
+
     def _kiss_files(self):
         for fn in filedialog.askopenfilenames(filetypes=[('KISS', ['*.kss']), ('All files', '*.*')]):
-            for t, data in utils.kiss_read(pathlib.Path(fn)):
-                self.feed(data, t)
+            try:
+                for data, t in utils.kiss_read(pathlib.Path(fn)):
+                    self.feed(data, t)
+            except Exception as e:
+                self.show_err(message='read %s: %s' % (fn, e.args))
         self.fill_data()
 
     def _satdump_files(self):
