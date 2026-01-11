@@ -1487,7 +1487,7 @@ class UspImageReceiver(ImageReceiver):
                 t = self.last_date
             self.last_fname = fname
             x = pathlib.Path(fname)
-            return str(x.with_stem(x.stem + '_' + self.strftime(t)))
+            return str(x.with_name(x.stem + '_' + self.strftime(t) + x.suffix))
         return fname
 
     def generate_fid(self, fname='', force=0, t=None):
